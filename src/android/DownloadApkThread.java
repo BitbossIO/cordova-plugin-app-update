@@ -117,6 +117,8 @@ public class DownloadApkThread implements Runnable {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            mHandler.sendEmptyMessage(Constants.NETWORK_ERROR);
+            mDownloadDialog.cancel();
         }
 
     }
