@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-app-update",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Cordova App Update",
   "cordova": {
     "id": "cordova-plugin-app-update",
@@ -26,14 +26,10 @@
   "license": "MIT",
   "scripts": {
     "test": "npm run jshint",
-    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src"
+    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src && node node_modules/jshint/bin/jshint tests"
   },
   "bugs": {
     "url": "https://github.com/vaenow/cordova-plugin-app-update/issues"
-  },
-  "scripts": {
-    "test": "npm run jshint",
-    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src && node node_modules/jshint/bin/jshint tests"
   },
   "homepage": "https://github.com/vaenow/cordova-plugin-app-update#readme",
   "devDependencies": {
