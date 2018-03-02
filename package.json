@@ -1,6 +1,6 @@
 {
   "name": "@bitboss/cordova-plugin-app-update",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "Cordova App Update",
   "cordova": {
     "id": "cordova-plugin-app-update",
