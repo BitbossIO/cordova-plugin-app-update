@@ -150,8 +150,8 @@ public class DownloadApkThread implements Runnable {
             return response;
 
         } catch (BadHostException e) {
-            if (!NetworkState.isAccessToNetwork())
-                throw new NoInternetConnectionException();
+            // if (!NetworkState.isAccessToNetwork())
+            //     throw new NoInternetConnectionException();
 
             if (!activeDomain.isLockable())
                 throw e;
