@@ -5,37 +5,25 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.ProgressBar;
-import android.util.Base64;
-
-import com.cabbage.SimpleWebServer;
 import com.cabbage.domain.DomainChain;
-import com.cabbage.domain.DomainChainManager;
+import com.cabbage.domain.DomainChainService;
 import com.cabbage.domain.RequestURLType;
-import com.cabbage.domain.json.Wrapper;
+import com.cabbage.httploader.exceptions.BadHostException;
+import com.cabbage.httploader.exceptions.HasNotAvailableDomainsException;
+import com.cabbage.httploader.exceptions.NoInternetConnectionException;
+import com.cabbage.httploader.exceptions.UnsupportedHttpVerbException;
 import com.cabbage.net.NetworkState;
-import com.cabbage.net.exceptions.BadHostException;
-import com.cabbage.net.exceptions.HasNotAvailableDomainsException;
-import com.cabbage.net.exceptions.NoInternetConnectionException;
-import com.cabbage.net.exceptions.UnsupportedHttpVerbException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONObject;
-import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-
-import 	java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -61,7 +49,6 @@ public class DownloadApkThread implements Runnable {
     private AuthenticationOptions authentication;
 
     OkHttpClient client = new OkHttpClient();
-    DomainChainManager manager = new DomainChainManager();
     private DomainChain activeDomain;
 
     public DownloadApkThread(Context mContext, Handler mHandler, ProgressBar mProgress, AlertDialog mDownloadDialog, HashMap<String, String> mHashMap, JSONObject options) {
@@ -91,14 +78,6 @@ public class DownloadApkThread implements Runnable {
             // 判断SD卡是否存在，并且是否具有读写权限
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 // 获得存储卡的路径
-                //
-                manager = new DomainChainManager();
-                try {
-                    String jsonData = tryLoadResponse("public/domains.json").body().string();
-                    ObjectMapper mapper = new ObjectMapper();
-                    Wrapper wrapper = mapper.readValue(jsonData, Wrapper.class);
-                    manager.updateDomainList(wrapper);
-                } catch (Throwable e) {}
 
                 Response response;
                 try {
@@ -171,8 +150,8 @@ public class DownloadApkThread implements Runnable {
             return response;
 
         } catch (BadHostException e) {
-            if (!NetworkState.isAccessToNetwork())
-                throw new NoInternetConnectionException();
+            // if (!NetworkState.isAccessToNetwork())
+            //     throw new NoInternetConnectionException();
 
             if (!activeDomain.isLockable())
                 throw e;
@@ -184,7 +163,7 @@ public class DownloadApkThread implements Runnable {
 
     private Response loadContent(String route) throws BadHostException, HasNotAvailableDomainsException, UnsupportedHttpVerbException {
         // Loads a CDN provider and sets it  to member variable
-        activeDomain = manager.getDomainChainByTypeRequest(RequestURLType.APPUPDATE);
+        activeDomain = DomainChainService.getInstance().getDomainChain(RequestURLType.APPUPDATE);
         String sni = activeDomain.getSni();
         String fullUrl = "https://" + activeDomain.getCdn() + "/" + route;
 
